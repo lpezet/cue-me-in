@@ -1,6 +1,6 @@
 # Cue-Me-In
 
-This @lpezet/cue-me-in library helps the @lpezet/cue-me-in-cli command line interface monitoring things and alerting user of changes.
+This `@lpezet/cue-me-in` library helps the `@lpezet/cue-me-in-cli` command line interface monitoring things and alerting user of changes.
 
 This library makes it eas to fetch things (WHAT) and evaluate expressions against it (HOW) to generate a state from it.
 Changes in state could then be tracked to provide notifications (out of scope in this project).
@@ -42,9 +42,9 @@ const cue = CMI.builder()
 
 The CMI Builder and CMI Class takes 3 main properties:
 
-- **what**: The actual remote content/software we want to monitor here. This could be a web page or json (e.g. https://www.google.com) or a local process (e.g. ps in Linux). Mods, called Extraction Mods, are used to process the different possible values (e.g. httpMod is used to handle "http(s)" values).
-- **transform**: A way to transform the results from **what** to be processed by the **how** below.
-- **how**: How to process the remote content/process to generate a _state_. For example, we could be monitoring changes in the _h1_ of a web page, or the _wus_ field of a JSON result. Mods, called Evaluation Mods, are used to provide different languages to process content. For example, cheerioMod is used to load cheerio.js to run jquery-like queries.
+- `what`: The actual remote content/software we want to monitor here. This could be a web page or json (e.g. https://www.google.com) or a local process (e.g. ps in Linux). Mods, called Extraction Mods, are used to process the different possible values (e.g. httpMod is used to handle "http(s)" values).
+- `transform`: A way to transform the results from **what** to be processed by the **how** below.
+- `how`: How to process the remote content/process to generate a _state_. For example, we could be monitoring changes in the _h1_ of a web page, or the _wus_ field of a JSON result. Mods, called Evaluation Mods, are used to provide different languages to process content. For example, cheerioMod is used to load cheerio.js to run jquery-like queries.
 
 ## Extraction Mods (WHAT)
 
@@ -83,8 +83,8 @@ export interface Response {
 
 This interface is very similar to the _http.IncomingMessage_ interface with few additions:
 
-- **contentType**: shortcut to access the Content-type header value.
-- **body**: convenient way to get the body of the response.
+- `contentType`: shortcut to access the Content-type header value.
+- `body`: convenient way to get the body of the response.
 
 ### PS
 
@@ -94,7 +94,7 @@ It calls **ps** and parses the results as an array of key/value string pair (str
 
 ## Transformation Mods (TRANSFORM)
 
-The job of this mod is to simply transform the result from **WHAT** into something that can be processed by the **HOW**.
+The job of this mod is to simply transform the result from `what` into something that can be processed by the `how`.
 
 ### Interface
 
