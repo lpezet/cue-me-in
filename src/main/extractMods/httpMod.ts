@@ -44,8 +44,8 @@ const request = (
   params.timeout = params.timeout || 1000;
 
   return new Promise((resolve, reject) => {
-    console.log("#### Request options:");
-    console.log(params);
+    // console.log("#### Request options:");
+    // console.log(params);
     try {
       const req = lib.request(params, (res: http.IncomingMessage) => {
         const result: Response = {
@@ -53,27 +53,27 @@ const request = (
           contentType: res.headers["content-type"]
         };
         if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
-          console.log(
-            "# stopping response here. Got statusCode=" + res.statusCode
-          );
+          // console.log(
+          //  "# stopping response here. Got statusCode=" + res.statusCode
+          // );
           return resolve(result);
         }
 
         const data: any[] = [];
 
         res.on("data", (chunk: any) => {
-          console.log("# getting data...");
+          // console.log("# getting data...");
           data.push(chunk);
         });
         res.on("end", () => {
           result.body = Buffer.concat(data).toString();
-          console.log("# got all the data! Resolving...");
+          // console.log("# got all the data! Resolving...");
           resolve(result);
         });
       });
 
       req.on("error", error => {
-        console.log("# Got error during request.");
+        // console.log("# Got error during request.");
         reject(error);
       });
       req.on("socket", s => {
@@ -83,8 +83,8 @@ const request = (
           req.abort();
         });
         s.on("error", (socketError: Error) => {
-          console.log("# Socket error!");
-          console.log(socketError);
+          // console.log("# Socket error!");
+          // console.log(socketError);
           reject(socketError);
         });
       });

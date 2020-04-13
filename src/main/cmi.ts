@@ -30,7 +30,7 @@ export class CMIClass {
         return how.eval(value);
       })
       .then((state: any) => {
-        console.log("State=" + state);
+        // console.log("State=" + state);
         if (this.options.hashResult) state = hashToHex(state);
         return Promise.resolve(state);
       })
