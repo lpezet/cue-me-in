@@ -1,4 +1,7 @@
 import * as ChildProcess from "child_process";
+// const EOL = new RegExp(/(\r\n)|(\n\r)|\n|\r/);
+import { EOL } from "os";
+import { ExtractMod } from "./mod";
 
 export interface PsModSpecs {
   pid?: string | number;
@@ -43,10 +46,6 @@ export function runPs(specs: PsModSpecs): Promise<string> {
   });
 }
 
-// const EOL = new RegExp(/(\r\n)|(\n\r)|\n|\r/);
-import { EOL } from "os";
-import { Mod } from "./mod";
-
 export type hint = {
   id: string;
   label: string;
@@ -65,12 +64,12 @@ const HEADER_HINTS: { [key: string]: hint } = {
     justified: "right"
   },
   "%CPU": {
-    id: "%cpu",
+    id: "percCpu",
     label: "USER",
     justified: "right"
   },
   "%MEM": {
-    id: "%mem",
+    id: "percMem",
     label: "USER",
     justified: "right"
   },
@@ -149,7 +148,12 @@ export function parseHeaders(line: string): PsHeader[] {
 }
 
 export type PsData = {
-  [key: string]: string;
+  pid?: string;
+  percCpu?: number;
+  percMem?: number;
+  time?: string;
+  command?: string;
+  [key: string]: any;
 };
 
 /**
@@ -275,7 +279,7 @@ export function parsePsOutput(output: string): Promise<PsData[]> {
   return Promise.resolve(parsedLines);
 }
 
-export class PsMod implements Mod {
+export class PsMod implements ExtractMod {
   constructor(private specs?: PsModSpecs) {}
   fetch(): Promise<any> {
     return runPs(this.specs || {}).then(parsePsOutput);

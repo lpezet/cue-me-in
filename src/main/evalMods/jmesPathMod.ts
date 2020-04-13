@@ -1,7 +1,7 @@
-import { Mod } from "./mod";
+import { EvalMod } from "./mod";
 import * as jmespathlib from "jmespath";
 
-export class JmesPath implements Mod {
+export class JmesPath implements EvalMod {
   constructor(private specs: string) {}
   eval(input: any): Promise<string> {
     const query = this.specs.substring("jmespath:".length);

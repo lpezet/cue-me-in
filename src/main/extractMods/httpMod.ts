@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as https from "https";
-import { Mod } from "./mod";
+import { ExtractMod } from "./mod";
 
 interface RequestOptions {
   method: string; // "GET" | "POST" | "HEAD" | "OPTIONS" | "PUT" | "DELETE" | "PATCH";
@@ -106,7 +106,7 @@ const request = (
   });
 };
 
-export class HttpMod implements Mod {
+export class HttpMod implements ExtractMod {
   constructor(private specs: any) {}
   fetch(): Promise<any> {
     if (!this.specs) {

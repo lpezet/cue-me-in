@@ -1,3 +1,3 @@
-export interface Mod {
+export interface ExtractMod {
   fetch: () => Promise<any>;
 }

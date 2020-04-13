@@ -2,7 +2,8 @@
   "name": "@lpezet/cue-me-in",
   "version": "1.0.0",
   "description": "Library to help monitor processes or web pages.",
-  "main": "./lib/index.js",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
     "dist": "npm run clean && npm run tsc -- --build tsconfig.publish.json",
     "tsc": "tsc",

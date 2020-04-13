@@ -1,5 +1,7 @@
 import * as http from "http";
 import * as https from "https";
+import * as crypto from "crypto";
+
 /*
 const http = require("http");
 const https = require("https");
@@ -12,6 +14,20 @@ export interface RequestOptions {
   hostname?: string;
   port?: number;
 }
+
+export const hashToHex = (value: any): string => {
+  const hash = crypto.createHash("sha256");
+  let toHash = "";
+  if (value) {
+    if (typeof value === "object") {
+      toHash = JSON.stringify(value);
+    } else {
+      toHash = value.toString();
+    }
+  }
+  hash.update(toHash);
+  return hash.digest("hex");
+};
 
 export const request = async (
   url: string,
