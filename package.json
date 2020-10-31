@@ -109,6 +109,7 @@
     "jwks-rsa": "^1.7.0",
     "lodash": "^4.17.20",
     "log4js": "^6.1.2",
+    "node-forge": "^0.10.0",
     "portfinder": "^1.0.25",
     "update-notifier": "^4.1.0",
     "uuid": "^7.0.2"
