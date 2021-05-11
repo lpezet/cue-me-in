@@ -107,7 +107,7 @@
     "jmespath": "^0.15.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.7.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "log4js": "^6.1.2",
     "node-forge": "^0.10.0",
     "portfinder": "^1.0.25",
