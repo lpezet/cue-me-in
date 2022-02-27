@@ -9,7 +9,7 @@
     "tsc": "tsc",
     "clean": "rimraf lib",
     "lint": "eslint --ext .ts,.tsx .",
-    "mocha": "nyc mocha --opts mocha.opts",
+    "mocha": "nyc mocha --recursive src/test/**/*",
     "mocha-single": "nyc mocha --require ts-node/register --require source-map-support/register --require src/test/helpers/mocha-bootstrap.js --timeout=10000",
     "test-integration": "ts-node",
     "test": "npm run lint -- --quiet && npm run mocha",
