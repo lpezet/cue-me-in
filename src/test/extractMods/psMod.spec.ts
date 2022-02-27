@@ -68,8 +68,8 @@ describe("psMod", () => {
     expect(d[0]).to.deep.equals({
       user: "lucpezet",
       pid: "13272",
-      "%cpu": "103.2",
-      "%mem": "1.1",
+      percCpu: "103.2",
+      percMem: "1.1",
       vsz: "9292360",
       rss: "190412",
       tt: "??",
