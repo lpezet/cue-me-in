@@ -1,6 +1,6 @@
 import { expect } from "chai";
 // import * as cheerio from "cheerio";
-import { CMI } from "../main";
+import { CMI, CMIClass } from "../main";
 import { Response } from "../main/extractMods/httpMod";
 import * as http from "http";
 import * as portfinder from "portfinder";
@@ -20,8 +20,8 @@ describe("index", () => {
       builder.how("");
     }).to.throw("Invalid specs [] for how.");
   });
-  it("basic", () => {
-    const server = http.createServer(function(
+  it("basic", async () => {
+    const server = http.createServer(function (
       _req: http.IncomingMessage,
       res: http.ServerResponse
     ): void {
@@ -34,22 +34,22 @@ describe("index", () => {
     server.on("error", (error: Error) => {
       throw error;
     });
-    _getPort().then(port => {
+    await _getPort().then(async (port) => {
       server.listen(port); // , function() {});
       const url = `http://localhost:${port}/`;
       const cue = CMI.builder()
         .what(url)
         .transform({
-          transform(input: Response): Promise<{}> {
+          transform(input: Response): Promise<any> {
             const str = input.body || "{}";
             return Promise.resolve(JSON.parse(str));
-          }
+          },
         })
         .how("jmespath:wus")
-        .initialState("999")
+        // .initialState("999")
         .build();
 
-      cue
+      await cue
         .run()
         .should.eventually.equal(
           "83cf8b609de60036a8277bd0e96135751bbc07eb234256d4b65b893360651bf2"

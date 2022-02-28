@@ -9,8 +9,8 @@ export const Identity = new IdentityClass();
 
 export const Json: TransformMod<Response, {}> = {
   transform(input: Response): Promise<{}> {
-    return Promise.resolve(JSON.parse(input.body || "{}"));
-  }
+    return Promise.resolve(JSON.parse(input.body || "{}") as {});
+  },
 };
 
 export interface TransformMod<I, O> {

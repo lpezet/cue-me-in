@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import * as http from "http";
 import * as https from "https";
 import * as crypto from "crypto";
@@ -11,7 +12,7 @@ export interface RequestOptions {
   method: string; // "GET" | "POST" | "HEAD" | "OPTIONS" | "PUT" | "DELETE" | "PATCH";
   headers?: { [key: string]: string };
   path?: string;
-  hostname?: string;
+  host?: string;
   port?: number;
 }
 
@@ -22,7 +23,9 @@ export const hashToHex = (value: any): string => {
     if (typeof value === "object") {
       toHash = JSON.stringify(value);
     } else {
-      toHash = value.toString();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      toHash = value.toString() as string;
     }
   }
   hash.update(toHash);
@@ -39,7 +42,9 @@ export const request = async (
   const urlObj = new URL(url);
   // const [h, path] = url.split("://")[1].split("/");
   // const [host, port] = h.split(":");
-  const params = JSON.parse(JSON.stringify(options)); // make a copy
+  const params: RequestOptions = JSON.parse(
+    JSON.stringify(options)
+  ) as RequestOptions; // make a copy
   params.host = params.host || urlObj.host;
   params.port =
     params.port || urlObj.port || url.startsWith("https://") ? 443 : 80;
@@ -50,7 +55,7 @@ export const request = async (
     console.log(params);
     const req = lib.request(params, (res: http.IncomingMessage) => {
       if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
-        return reject(new Error(`Status Code: ${res.statusCode}`));
+        return reject(new Error(`Status Code: ${res.statusCode || "NA"}`));
       }
 
       const data: any[] = [];

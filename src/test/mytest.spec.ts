@@ -6,7 +6,7 @@ import { JmesPath } from "../main/evalMods/jmesPathMod";
 import { PsData, PsMod } from "../main/extractMods/psMod";
 
 describe("mytest", () => {
-  it.skip("httpJmesPath", done => {
+  it.skip("httpJmesPath", (done) => {
     const cue = CMI.builder()
       .what("https://stats.foldingathome.org/api/donor/lpezet")
       .transform({
@@ -22,7 +22,7 @@ describe("mytest", () => {
               "HTTP Response with content-type={input.contentType} not supported."
             )
           );
-        }
+        },
       })
       .how("jmespath:wus")
       .build();
@@ -47,7 +47,7 @@ describe("mytest", () => {
       });
     // expect(true).to.be.true;
   });
-  it.skip("psJmesPath", done => {
+  it.skip("psJmesPath", (done) => {
     const options: CMIOptions = {
       what: new PsMod({ pid: 342 }),
       how: new JmesPath('jmespath:"%cpu"'),
@@ -56,8 +56,8 @@ describe("mytest", () => {
           console.log("# ps data=");
           console.log(input);
           return Promise.resolve(input[0] || {});
-        }
-      }
+        },
+      },
     };
     const cue = new CMIClass(options);
 

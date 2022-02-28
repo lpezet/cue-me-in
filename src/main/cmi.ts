@@ -17,7 +17,7 @@ export class CMIClass {
   constructor(options: CMIOptions) {
     this.options = options;
   }
-  run(): Promise<string> {
+  run(): Promise<any> {
     const what = this.options.what;
     const how = this.options.how;
     const tx = this.options.transform;
@@ -83,7 +83,7 @@ class CMIBuilder {
     const options: CMIOptions = {
       what: this.options.what,
       how: this.options.how,
-      transform: this.options.transform || Identity
+      transform: this.options.transform || Identity,
     };
     return new CMIClass(options);
   }

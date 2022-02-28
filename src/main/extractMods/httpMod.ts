@@ -1,14 +1,19 @@
 import * as http from "http";
 import * as https from "https";
+import { Duplex } from "stream";
 import { ExtractMod } from "./mod";
 
 interface RequestOptions {
-  method: string; // "GET" | "POST" | "HEAD" | "OPTIONS" | "PUT" | "DELETE" | "PATCH";
+  method?: string; // "GET" | "POST" | "HEAD" | "OPTIONS" | "PUT" | "DELETE" | "PATCH";
   headers?: { [key: string]: string };
   path?: string;
-  hostname?: string;
+  host?: string;
   port?: number;
   timeout?: number; // in ms
+}
+
+export interface UrlAndRequestOptions extends RequestOptions {
+  url: string;
 }
 
 export interface Response {
@@ -32,17 +37,18 @@ const request = (
   postData = undefined
 ): Promise<Response> => {
   const lib = url.startsWith("https://") ? https : http;
-
   const urlObj = new URL(url);
+
   // const [h, path] = url.split("://")[1].split("/");
   // const [host, port] = h.split(":");
-  const params = JSON.parse(JSON.stringify(options)); // make a copy
+  const params: RequestOptions = JSON.parse(
+    JSON.stringify(options)
+  ) as RequestOptions; // make a copy
 
   params.host = params.host || urlObj.hostname;
-  params.port = params.port || urlObj.port; // || (url.startsWith("https://") ? 443 : 80);
+  params.port = params.port || parseInt(urlObj.port || "0"); // || (url.startsWith("https://") ? 443 : 80);
   params.path = params.path || urlObj.pathname || "/";
   params.timeout = params.timeout || 1000;
-
   return new Promise((resolve, reject) => {
     // console.log("#### Request options:");
     // console.log(params);
@@ -50,7 +56,7 @@ const request = (
       const req = lib.request(params, (res: http.IncomingMessage) => {
         const result: Response = {
           ...res,
-          contentType: res.headers["content-type"]
+          contentType: res.headers["content-type"],
         };
         if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
           // console.log(
@@ -72,13 +78,12 @@ const request = (
         });
       });
 
-      req.on("error", error => {
+      req.on("error", (error) => {
         // console.log("# Got error during request.");
         reject(error);
       });
-      req.on("socket", s => {
-        s.setTimeout(params.timeout);
-        s.on("timeout", function() {
+      req.on("socket", (s: Duplex) => {
+        s.on("timeout", function () {
           // console.log("# socket timeout!!!");
           req.abort();
         });
@@ -107,7 +112,7 @@ const request = (
 };
 
 export class HttpMod implements ExtractMod {
-  constructor(private specs: any) {}
+  constructor(private specs: string | UrlAndRequestOptions) {}
   fetch(): Promise<any> {
     if (!this.specs) {
       return Promise.reject(
@@ -124,12 +129,13 @@ export class HttpMod implements ExtractMod {
     }
     // const url = info; // "https://stats.foldingathome.org/api/donor/lpezet";
     const options = {
-      method: this.specs.method || "GET",
-      headers: {
-        Accept: this.specs.accept || "application/json"
-      },
-      timeout: this.specs.timeout || 1000
+      method: (typeof this.specs !== "string" && this.specs.method) || "GET",
+      headers: (typeof this.specs !== "string" && this.specs.headers) || {},
+      timeout: (typeof this.specs !== "string" && this.specs.timeout) || 1000,
     };
+    if (!options.headers["Accept"] && !options.headers["accept"]) {
+      options.headers["Accept"] = "application/json";
+    }
     return request(url, options);
     /*
     return new Promise((resolve, reject) => {

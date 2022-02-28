@@ -9,6 +9,7 @@ export interface PsModSpecs {
 
 /**
  * @param specs
+ * @return Promise<string>
  */
 export function runPs(specs: PsModSpecs): Promise<string> {
   const spawn = ChildProcess.spawn;
@@ -17,26 +18,29 @@ export function runPs(specs: PsModSpecs): Promise<string> {
   // }
   return new Promise((resolve, reject) => {
     const args = ["au"];
-    if (specs.pid) args.push("-p " + specs.pid);
+    if (specs.pid) args.push(`-p ${specs.pid}`);
 
     // "-o %cpu,%mem,acflag,args,comm,command,cpu,etime,flags,gid,inblk,jobc,ktrace,ktracep,lim,logname,lstart,majflt,minflt,msgrcv,msgsnd,nice,nivcsw,nsigs,nswap,nvcsw,nwchan,oublk,p_ru,paddr,pagein,pgid,pid,ppid,pri,re,rgid,rss,ruid,ruser,sess,sig,sigmask,sl,start,state,svgid,svuid,tdev,time,tpgid,tsess,tsiz,tt,tty,ucomm,uid,upr,user,utime,vsz,wchan,wq,wqb,wqr,wql,xstat";
     const child = spawn("ps", args);
     let stdout = "";
     let stderr: string | null = null;
 
-    child.stdout.on("data", function(data) {
+    child.stdout.on("data", function (data) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       stdout += data.toString();
     });
 
-    child.stderr.on("data", function(data) {
+    child.stderr.on("data", function (data) {
       if (stderr === null) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         stderr = data.toString();
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         stderr += data.toString();
       }
     });
 
-    child.on("exit", function() {
+    child.on("exit", function () {
       if (stderr) {
         return reject(new Error(stderr.toString()));
       } else {
@@ -56,58 +60,58 @@ const HEADER_HINTS: { [key: string]: hint } = {
   USER: {
     id: "user",
     label: "USER",
-    justified: "left"
+    justified: "left",
   },
   PID: {
     id: "pid",
     label: "USER",
-    justified: "right"
+    justified: "right",
   },
   "%CPU": {
     id: "percCpu",
     label: "USER",
-    justified: "right"
+    justified: "right",
   },
   "%MEM": {
     id: "percMem",
     label: "USER",
-    justified: "right"
+    justified: "right",
   },
   VSZ: {
     id: "vsz",
     label: "VSZ",
-    justified: "right"
+    justified: "right",
   },
   RSS: {
     id: "rss",
     label: "RSS",
-    justified: "right"
+    justified: "right",
   },
   TT: {
     id: "tt",
     label: "TT",
-    justified: "right"
+    justified: "right",
   },
   STAT: {
     id: "stat",
     label: "STAT",
-    justified: "left"
+    justified: "left",
   },
   STARTED: {
     id: "started",
     label: "STARTED",
-    justified: "right"
+    justified: "right",
   },
   TIME: {
     id: "time",
     label: "TIME",
-    justified: "right"
+    justified: "right",
   },
   COMMAND: {
     id: "command",
     label: "COMMAND",
-    justified: "left"
-  }
+    justified: "left",
+  },
 };
 
 export type PsHeader = {
@@ -214,11 +218,7 @@ export function parseLines(headers: PsHeader[], lines: string[]): PsData[] {
                 }
                 if (!/\s/.test(c)) {
                   console.log(
-                    "ERROR: Could not figure out content for " +
-                      header.label +
-                      " at line #" +
-                      lineIndex +
-                      ". Skipping (1)."
+                    `ERROR: Could not figure out content for ${header.label} at line #${lineIndex}. Skipping (1).`
                   );
                 } else {
                   d[hint.id] = line.substring(start, j).trim();
@@ -245,11 +245,7 @@ export function parseLines(headers: PsHeader[], lines: string[]): PsData[] {
             }
             if (!/\s/.test(c)) {
               console.log(
-                "ERROR: Could not figure out content for " +
-                  header.label +
-                  " at line #" +
-                  lineIndex +
-                  ". Skipping (2)."
+                `ERROR: Could not figure out content for ${header.label} at line #${lineIndex}. Skipping (2).`
               );
             } else {
               // console.log(`......start=${start}, end=${end}.`);

@@ -4,14 +4,14 @@ import {
   PsHeader,
   PsMod,
   parseHeaders,
-  parseLines
+  parseLines,
 } from "../../main/extractMods/psMod";
 
 describe("psMod", () => {
-  it("basic", done => {
+  it("basic", (done) => {
     const mod = new PsMod();
     mod.fetch().then(
-      _data => {
+      (_data) => {
         done();
       },
       (err: Error) => {
@@ -33,7 +33,7 @@ describe("psMod", () => {
     const headers: PsHeader[] = [
       { label: "USER", start: 0, end: 19 },
       { label: "PID", start: 19, end: 24 },
-      { label: "SOMETHINGWEDONTHAVE", start: 24, end: -1 }
+      { label: "SOMETHINGWEDONTHAVE", start: 24, end: -1 },
     ];
     const d: PsData[] = parseLines(headers, lines);
     // console.log(d);
@@ -41,12 +41,12 @@ describe("psMod", () => {
     expect(d.length).equals(1);
     expect(d[0]).to.deep.equals({
       user: "lucpezet",
-      pid: "13272"
+      pid: "13272",
     });
   });
   it("parseLinesSingle", () => {
     const lines = [
-      "lucpezet         13272 103.2  1.1  9292360 190412   ??  R    Sun03PM   2:53.04 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.frame"
+      "lucpezet         13272 103.2  1.1  9292360 190412   ??  R    Sun03PM   2:53.04 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.frame",
     ];
     const headers: PsHeader[] = [
       { label: "USER", start: 0, end: 19 },
@@ -59,7 +59,7 @@ describe("psMod", () => {
       { label: "STAT", start: 56, end: 61 },
       { label: "STARTED", start: 61, end: 74 },
       { label: "TIME", start: 74, end: 79 },
-      { label: "COMMAND", start: 79, end: -1 }
+      { label: "COMMAND", start: 79, end: -1 },
     ];
     const d: PsData[] = parseLines(headers, lines);
     // console.log(d);
@@ -77,7 +77,7 @@ describe("psMod", () => {
       started: "Sun03PM",
       time: "2:53.04",
       command:
-        "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.frame"
+        "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.frame",
     });
   });
 });

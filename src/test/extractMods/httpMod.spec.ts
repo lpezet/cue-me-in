@@ -3,12 +3,14 @@ import { expect } from "chai";
 import { HttpMod, Response } from "../../main/extractMods/httpMod";
 import * as http from "http";
 import * as portfinder from "portfinder";
+import { fail } from "assert";
 
 const _getPort = portfinder.getPortPromise;
 
 describe("httpMod", () => {
-  it("missingSpecs", done => {
-    const mod = new HttpMod(null);
+  /*
+  it("missingSpecs", (done) => {
+    const mod = new HttpMod();
     mod.fetch().then(
       () => {
         done("Expected error.");
@@ -18,8 +20,9 @@ describe("httpMod", () => {
       }
     );
   });
-  it("basic", done => {
-    const server = http.createServer(function(
+  */
+  it("basic", async () => {
+    const server = http.createServer(function (
       _req: http.IncomingMessage,
       res: http.ServerResponse
     ): void {
@@ -30,35 +33,19 @@ describe("httpMod", () => {
       server.close();
     });
     server.on("error", (error: Error) => {
-      done(error);
+      fail(error);
     });
 
-    try {
-      _getPort().then(port => {
-        server.listen(port); // , function() {});
-        const url = `http://localhost:${port}/`;
-        const mod = new HttpMod(url);
-        mod
-          .fetch()
-          .then(
-            (_res: any) => {
-              done();
-            },
-            (error: Error) => {
-              done(error);
-            }
-          )
-          .catch((error: Error) => {
-            done(error);
-          });
-      });
-    } catch (err) {
-      done(err);
-    }
+    return _getPort().then(async (port) => {
+      server.listen(port); // , function() {});
+      const url = `http://localhost:${port}/`;
+      const mod = new HttpMod(url);
+      return mod.fetch().then().catch(fail);
+    });
   });
 
-  it("statusCode400", done => {
-    const server = http.createServer(function(
+  it("statusCode400", async () => {
+    const server = http.createServer(function (
       _req: http.IncomingMessage,
       res: http.ServerResponse
     ): void {
@@ -68,36 +55,24 @@ describe("httpMod", () => {
       server.close();
     });
     server.on("error", (error: Error) => {
-      done(error);
+      fail(error);
     });
 
-    try {
-      _getPort().then(port => {
-        server.listen(port); // , function() {});
-        const url = `http://localhost:${port}/`;
-        const mod = new HttpMod(url);
-        mod
-          .fetch()
-          .then(
-            (res: Response) => {
-              expect(res.statusCode).equals(400);
-              done();
-            },
-            (error: Error) => {
-              done(error);
-            }
-          )
-          .catch((error: Error) => {
-            done(error);
-          });
-      });
-    } catch (err) {
-      done(err);
-    }
+    return await _getPort().then((port) => {
+      server.listen(port); // , function() {});
+      const url = `http://localhost:${port}/`;
+      const mod = new HttpMod(url);
+      return mod
+        .fetch()
+        .then((res: Response) => {
+          expect(res.statusCode).equals(400);
+        })
+        .catch(fail);
+    });
   });
 
-  it("connectionTimeout", done => {
-    const server = http.createServer(function(
+  it("connectionTimeout", async () => {
+    const server = http.createServer(function (
       _req: http.IncomingMessage,
       res: http.ServerResponse
     ): void {
@@ -107,54 +82,36 @@ describe("httpMod", () => {
       }, 1000);
     });
     server.on("error", (error: Error) => {
-      done(error);
+      fail(error);
     });
-    try {
-      _getPort().then(port => {
-        server.listen(port);
-        const url = `http://localhost:${port}/`;
-        const mod = new HttpMod({ url, timeout: 100 });
-        mod
-          .fetch()
-          .then(
-            () => {
-              done("Expected error!");
-            },
-            (_error: Error) => {
-              done();
-            }
-          )
-          .catch((error: Error) => {
-            done(error);
-          });
-      });
-    } catch (err) {
-      done(err);
-    }
+    return _getPort().then((port) => {
+      server.listen(port);
+      const url = `http://localhost:${port}/`;
+      const mod = new HttpMod({ url, timeout: 100 });
+      return mod
+        .fetch()
+        .then(() => {
+          fail("Expected error!");
+        })
+        .catch(() => {
+          // nop
+        });
+    });
   });
 
-  it("connectionRefused", done => {
-    try {
-      _getPort().then(port => {
-        // server.listen(port);
-        const url = `http://localhost:${port}/`;
-        const mod = new HttpMod({ url, timeout: 100 });
-        mod
-          .fetch()
-          .then(
-            () => {
-              done("Expected error!");
-            },
-            (_error: Error) => {
-              done();
-            }
-          )
-          .catch((error: Error) => {
-            done(error);
-          });
-      });
-    } catch (err) {
-      done(err);
-    }
+  it("connectionRefused", async () => {
+    return _getPort().then(async (port) => {
+      // server.listen(port);
+      const url = `http://localhost:${port}/`;
+      const mod = new HttpMod({ url, timeout: 100 });
+      return mod
+        .fetch()
+        .then(() => {
+          fail("Expected error!");
+        })
+        .catch(() => {
+          // nop
+        });
+    });
   });
 });
