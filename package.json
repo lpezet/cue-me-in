@@ -110,7 +110,7 @@
     "log4js": "^6.4.1",
     "node-forge": "^1.2.1",
     "portfinder": "^1.0.28",
-    "update-notifier": "^4.1.3",
+    "update-notifier": "^6.0.2",
     "uuid": "^7.0.2"
   }
 }
